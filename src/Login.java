@@ -43,12 +43,8 @@ public class Login extends JDialog {
 
                 String userID = authenticateUser(email, password, role);
                 if (userID != null) {
-                    if (role.equals("Student")) {
-                        JOptionPane.showMessageDialog(Login.this, "Student logged in successfully", "Success", JOptionPane.INFORMATION_MESSAGE);
-                    } else if (role.equals("Teacher")) {
-                        JOptionPane.showMessageDialog(Login.this, "Teacher logged in successfully", "Success", JOptionPane.INFORMATION_MESSAGE);
-                    }
-                    dispose();
+                    dispose();  // Close the login dialog
+                    new MainScreen(userID, role);  // Open the main screen
                 } else {
                     JOptionPane.showMessageDialog(Login.this, "Invalid credentials", "Try Again", JOptionPane.ERROR_MESSAGE);
                 }
