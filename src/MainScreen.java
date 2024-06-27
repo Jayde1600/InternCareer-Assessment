@@ -2,48 +2,28 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 
 public class MainScreen extends JFrame {
     private JPanel mainPanel;
-    private JTextField studentNumber;
-    private JEditorPane RulesPanel;
-    private JCheckBox acceptBox;
-    private JButton TakeExamBtn;
     private JComboBox<String> examBox;
+    private JTextField studentNumber;
+    private JEditorPane rulesPanel;
+    private JCheckBox acceptBox;
+    private JButton takeExamButton;
     private JButton logoutButton;
 
     public MainScreen(String userID, String role) {
         setTitle("Main Screen");
+        setContentPane(mainPanel);
+        setMinimumSize(new Dimension(550, 420));
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        setMinimumSize(new Dimension(500, 400));
         setLocationRelativeTo(null);  // Center the frame
 
-        mainPanel = new JPanel();
-        mainPanel.setLayout(new GridLayout(6, 2, 10, 10));
-
-        studentNumber = new JTextField();
-        mainPanel.add(new JLabel("Student Number:"));
-        mainPanel.add(studentNumber);
-
-        RulesPanel = new JEditorPane();
-        RulesPanel.setText("Exam Rules:\n1. No cheating\n2. No talking\n...");
-        RulesPanel.setEditable(false);
-        mainPanel.add(new JLabel("Rules:"));
-        mainPanel.add(new JScrollPane(RulesPanel));  // Use JScrollPane to make it scrollable
-
-        acceptBox = new JCheckBox("I accept the rules");
-        mainPanel.add(acceptBox);
-
-        examBox = new JComboBox<>();
-        examBox.addItem("Math Exam");
-        examBox.addItem("Science Exam");
-        mainPanel.add(new JLabel("Select Exam:"));
-        mainPanel.add(examBox);
-
-        TakeExamBtn = new JButton("Take Exam");
-        mainPanel.add(TakeExamBtn);
-
-        logoutButton = new JButton("Logout");
+        // Logout button action
         logoutButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -51,11 +31,43 @@ public class MainScreen extends JFrame {
                 new Login(null);  // Show login screen again
             }
         });
-        mainPanel.add(logoutButton);
 
-        setContentPane(mainPanel);
-        pack();  // Adjust the frame size based on the preferred sizes of its components
+        // Load exams from database
+        loadExamsFromDatabase();
+
         setVisible(true);
+    }
+
+    private void loadExamsFromDatabase() {
+        final String DB_URL = "jdbc:mysql://localhost:3306/onlineexam";
+        final String USERNAME = "root";
+        final String PASSWORD = "SlyferRose16th!!";
+
+        Connection conn = null;
+        PreparedStatement preparedStatement = null;
+        ResultSet resultSet = null;
+
+        try {
+            conn = DriverManager.getConnection(DB_URL, USERNAME, PASSWORD);
+            String sql = "SELECT exam_name FROM exams";  // Assuming you have an exams table with an exam_name column
+            preparedStatement = conn.prepareStatement(sql);
+            resultSet = preparedStatement.executeQuery();
+
+            while (resultSet.next()) {
+                examBox.addItem(resultSet.getString("exam_name"));
+            }
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            try {
+                if (resultSet != null) resultSet.close();
+                if (preparedStatement != null) preparedStatement.close();
+                if (conn != null) conn.close();
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
     }
 
     public static void main(String[] args) {
