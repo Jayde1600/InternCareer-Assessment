@@ -1,7 +1,7 @@
-import javax.swing.*;
+import javax.swing. *;
 import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
@@ -15,20 +15,33 @@ public class MainScreen extends JFrame {
     private JCheckBox acceptBox;
     private JButton takeExamButton;
     private JButton logoutButton;
+    private JLabel MyDetailsLabel;  // Add this line
 
     public MainScreen(String userID, String role) {
         setTitle("Main Screen");
         setContentPane(mainPanel);
-        setMinimumSize(new Dimension(550, 420));
+        setMinimumSize(new Dimension(520, 420));
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setLocationRelativeTo(null);  // Center the frame
 
+        // Make the studentNumber field non-editable and set the user ID
+        studentNumber.setText(userID);
+        studentNumber.setEditable(false);
+
+        // Make the JEditorPane non-editable
+        rulesPanel.setEditable(false);
+
         // Logout button action
-        logoutButton.addActionListener(new ActionListener() {
+        logoutButton.addActionListener(e -> {
+            dispose();  // Close the main screen
+            new Login(null);  // Show login screen again
+        });
+
+        // Add action listener to "My Details" label
+        MyDetailsLabel.addMouseListener(new MouseAdapter() {
             @Override
-            public void actionPerformed(ActionEvent e) {
-                dispose();  // Close the main screen
-                new Login(null);  // Show login screen again
+            public void mouseClicked(MouseEvent e) {
+                new MyDetails(userID);
             }
         });
 
@@ -71,11 +84,6 @@ public class MainScreen extends JFrame {
     }
 
     public static void main(String[] args) {
-        SwingUtilities.invokeLater(new Runnable() {
-            @Override
-            public void run() {
-                new MainScreen("12345", "Student");
-            }
-        });
+        SwingUtilities.invokeLater(() -> new MainScreen("12345", "Student"));
     }
 }
