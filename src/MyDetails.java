@@ -11,29 +11,23 @@ public class MyDetails extends JFrame {
     private JTextField studentNumberField;
     private JTextField emailField;
     private JTextField phoneField;
-    private JButton logoutButton;  // Add this line
+    private JButton logoutButton;
 
     public MyDetails(String userID) {
         setTitle("My Details");
         setContentPane(detailsPanel);
-        setMinimumSize(new Dimension(500, 400));  // Adjust size as needed
+        setMinimumSize(new Dimension(520, 420));
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setLocationRelativeTo(null);  // Center the frame
 
-        // Make fields non-editable
-        nameField.setEditable(false);
-        studentNumberField.setEditable(false);
-        emailField.setEditable(false);
-        phoneField.setEditable(false);
+        // Load user details from database
+        loadUserDetails(userID);
 
         // Logout button action
         logoutButton.addActionListener(e -> {
-            dispose();  // Close the details screen
+            dispose();  // Close the my details screen
             new Login(null);  // Show login screen again
         });
-
-        // Load user details from the database
-        loadUserDetails(userID);
 
         setVisible(true);
     }
@@ -59,6 +53,10 @@ public class MyDetails extends JFrame {
                 studentNumberField.setText(resultSet.getString("id"));
                 emailField.setText(resultSet.getString("email"));
                 phoneField.setText(resultSet.getString("phone"));
+                studentNumberField.setEditable(false);
+                nameField.setEditable(false);
+                emailField.setEditable(false);
+                phoneField.setEditable(false);
             }
 
         } catch (Exception e) {
@@ -75,6 +73,6 @@ public class MyDetails extends JFrame {
     }
 
     public static void main(String[] args) {
-        SwingUtilities.invokeLater(() -> new MyDetails("12345"));  // Replace "12345" with an actual userID
+        SwingUtilities.invokeLater(() -> new MyDetails("12345"));
     }
 }

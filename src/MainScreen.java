@@ -1,4 +1,4 @@
-import javax.swing. *;
+import javax.swing.*;
 import java.awt.*;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
@@ -15,7 +15,7 @@ public class MainScreen extends JFrame {
     private JCheckBox acceptBox;
     private JButton takeExamButton;
     private JButton logoutButton;
-    private JLabel MyDetailsLabel;  // Add this line
+    private JLabel MyDetailsLabel;
 
     public MainScreen(String userID, String role) {
         setTitle("Main Screen");
@@ -42,6 +42,7 @@ public class MainScreen extends JFrame {
             @Override
             public void mouseClicked(MouseEvent e) {
                 new MyDetails(userID);
+                dispose();  // Close the main screen
             }
         });
 
