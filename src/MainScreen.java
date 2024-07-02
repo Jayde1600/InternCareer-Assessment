@@ -6,6 +6,7 @@ import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.util.List;
 
 public class MainScreen extends JFrame {
     private JPanel mainPanel;
@@ -48,6 +49,19 @@ public class MainScreen extends JFrame {
 
         // Load exams from database
         loadExamsFromDatabase();
+
+        // Take exam button action
+        takeExamButton.addActionListener(e -> {
+            List<Question> questions = List.of(
+                    new Question("int a = 2 * 4; int b = 3; int c = a * b;", List.of("12", "24", "Error", "11"), 1),
+                    new Question("String text_1 = \"Hello\"; String text_2 = \"User\"; System.out.println(text_1 + text_2); What's the output:", List.of("HelloUser", "Hello User", "Error", "UserHello"), 0),
+                    new Question("What is the output of the following code? int[] arr = {1, 2, 3}; System.out.println(arr[1]);", List.of("1", "2", "3", "Error"), 1),
+                    new Question("Which of the following is a correct way to create an object of class Foo?", List.of("Foo obj = new Foo();", "Foo obj;", "Foo() obj = new Foo;", "Foo obj = Foo;"), 0),
+                    new Question("What is the output of the following code? String str = \"abcd\"; System.out.println(str.length());", List.of("3", "4", "5", "Error"), 1)
+            );
+            new ExamQuestion(questions);
+            dispose();  // Close the main screen
+        });
 
         setVisible(true);
     }
