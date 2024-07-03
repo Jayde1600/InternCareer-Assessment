@@ -50,6 +50,10 @@ public class MainScreen extends JFrame {
         // Load exams from database
         loadExamsFromDatabase();
 
+        // Disable the "Take Exam" button until the checkbox is ticked
+        takeExamButton.setEnabled(false);
+        acceptBox.addActionListener(e -> takeExamButton.setEnabled(acceptBox.isSelected()));
+
         // Take exam button action
         takeExamButton.addActionListener(e -> {
             List<Question> questions = List.of(
@@ -59,7 +63,7 @@ public class MainScreen extends JFrame {
                     new Question("Which of the following is a correct way to create an object of class Foo?", List.of("Foo obj = new Foo();", "Foo obj;", "Foo() obj = new Foo;", "Foo obj = Foo;"), 0),
                     new Question("What is the output of the following code? String str = \"abcd\"; System.out.println(str.length());", List.of("3", "4", "5", "Error"), 1)
             );
-            new ExamQuestion(questions);
+            new ExamQuestion(questions, userID);  // Pass the userID
             dispose();  // Close the main screen
         });
 

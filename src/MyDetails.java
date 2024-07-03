@@ -25,7 +25,7 @@ public class MyDetails extends JFrame {
 
         // Logout button action
         logoutButton.addActionListener(e -> {
-            dispose();  // Close the my details screen
+            dispose();
             new Login(null);  // Show login screen again
         });
 

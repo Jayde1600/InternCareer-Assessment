@@ -21,9 +21,11 @@ public class ExamQuestion extends JFrame {
     private int currentQuestionIndex = 0;
     private int timeRemaining = 20 * 60;  // 20 minutes in seconds
     private List<Integer> userAnswers;  // Store user answers
+    private String userID;  // Store user ID
 
-    public ExamQuestion(List<Question> questions) {
+    public ExamQuestion(List<Question> questions, String userID) {
         this.questions = questions;
+        this.userID = userID;
         this.userAnswers = new ArrayList<>(questions.size());  // Initialize user answers list
         for (int i = 0; i < questions.size(); i++) {
             userAnswers.add(Integer.valueOf(-1));  // Initialize all answers to -1 (no answer)
@@ -121,7 +123,7 @@ public class ExamQuestion extends JFrame {
         int score = calculateScore();
         JOptionPane.showMessageDialog(this, "Exam submitted! Your score: " + score);
         dispose();
-        new MainScreen("12345", "Student");  // Navigate back to the main screen
+        new MainScreen(userID, "Student");  // Pass the user ID back to MainScreen
     }
 
     private int calculateScore() {
@@ -158,6 +160,6 @@ public class ExamQuestion extends JFrame {
                 new Question("Which of the following is a correct way to create an object of class Foo?", List.of("Foo obj = new Foo();", "Foo obj;", "Foo() obj = new Foo;", "Foo obj = Foo;"), 0),
                 new Question("What is the output of the following code? String str = \"abcd\"; System.out.println(str.length());", List.of("3", "4", "5", "Error"), 1)
         );
-        SwingUtilities.invokeLater(() -> new ExamQuestion(questions));
+        SwingUtilities.invokeLater(() -> new ExamQuestion(questions, "12345"));
     }
 }
