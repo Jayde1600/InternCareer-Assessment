@@ -3,12 +3,12 @@ import java.util.List;
 public class Question {
     private String questionText;
     private List<String> options;
-    private int correctAnswerIndex;
+    private int correctAnswer;
 
-    public Question(String questionText, List<String> options, int correctAnswerIndex) {
+    public Question(String questionText, List<String> options, int correctAnswer) {
         this.questionText = questionText;
         this.options = options;
-        this.correctAnswerIndex = correctAnswerIndex;
+        this.correctAnswer = correctAnswer;
     }
 
     public String getQuestionText() {
@@ -19,7 +19,7 @@ public class Question {
         return options;
     }
 
-    public int getCorrectAnswerIndex() {
-        return correctAnswerIndex;
+    public int getCorrectAnswer() {
+        return correctAnswer;
     }
 }

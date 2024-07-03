@@ -2,6 +2,7 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.ArrayList;
 import java.util.List;
 
 public class ExamQuestion extends JFrame {
@@ -19,9 +20,15 @@ public class ExamQuestion extends JFrame {
     private List<Question> questions;
     private int currentQuestionIndex = 0;
     private int timeRemaining = 20 * 60;  // 20 minutes in seconds
+    private List<Integer> userAnswers;  // Store user answers
 
     public ExamQuestion(List<Question> questions) {
         this.questions = questions;
+        this.userAnswers = new ArrayList<>(questions.size());  // Initialize user answers list
+        for (int i = 0; i < questions.size(); i++) {
+            userAnswers.add(Integer.valueOf(-1));  // Initialize all answers to -1 (no answer)
+        }
+
         setTitle("Exam Question");
         setContentPane(questionPanel);
         setMaximumSize(new Dimension(700, 520));
@@ -71,6 +78,15 @@ public class ExamQuestion extends JFrame {
         option4.setText(question.getOptions().get(3));
 
         optionsGroup.clearSelection();
+        int userAnswer = userAnswers.get(questionIndex);
+        if (userAnswer != -1) {
+            switch (userAnswer) {
+                case 0 -> option1.setSelected(true);
+                case 1 -> option2.setSelected(true);
+                case 2 -> option3.setSelected(true);
+                case 3 -> option4.setSelected(true);
+            }
+        }
 
         // Enable/disable navigation buttons
         // previousButton.setEnabled(questionIndex > 0);
@@ -79,17 +95,29 @@ public class ExamQuestion extends JFrame {
     }
 
     private void nextQuestion() {
+        saveUserAnswer();
         currentQuestionIndex++;
         loadQuestion(currentQuestionIndex);
     }
 
     private void previousQuestion() {
+        saveUserAnswer();
         currentQuestionIndex--;
         loadQuestion(currentQuestionIndex);
     }
 
+    private void saveUserAnswer() {
+        int selectedOption = -1;
+        if (option1.isSelected()) selectedOption = 0;
+        else if (option2.isSelected()) selectedOption = 1;
+        else if (option3.isSelected()) selectedOption = 2;
+        else if (option4.isSelected()) selectedOption = 3;
+
+        userAnswers.set(currentQuestionIndex, Integer.valueOf(selectedOption));
+    }
+
     private void submitExam() {
-        // Collect answers, calculate score, and display results
+        saveUserAnswer();  // Save the answer of the last question
         int score = calculateScore();
         JOptionPane.showMessageDialog(this, "Exam submitted! Your score: " + score);
         dispose();
@@ -97,16 +125,28 @@ public class ExamQuestion extends JFrame {
     }
 
     private int calculateScore() {
-        // Calculate the score based on the user's answers
         int score = 0;
-        // Add scoring logic here
+        for (int i = 0; i < questions.size(); i++) {
+            Question question = questions.get(i);
+            int correctAnswer = question.getCorrectAnswer();
+            int userAnswer = userAnswers.get(i);
+            if (userAnswer == correctAnswer) {
+                score++;
+            }
+        }
         return score;
     }
 
     private void updateTimerLabel() {
         int minutes = timeRemaining / 60;
         int seconds = timeRemaining % 60;
-        timerLabel.setText(String.format("Time remaining: %02d:%02d", minutes, seconds));
+
+        // Manually format the string
+        String timeString = "Time remaining: " +
+                (minutes < 10 ? "0" : "") + minutes + ":" +
+                (seconds < 10 ? "0" : "") + seconds;
+
+        timerLabel.setText(timeString);
     }
 
     public static void main(String[] args) {
