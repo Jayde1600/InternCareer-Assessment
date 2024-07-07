@@ -22,13 +22,15 @@ public class ExamQuestion extends JFrame {
     private int timeRemaining = 20 * 60;  // 20 minutes in seconds
     private List<Integer> userAnswers;  // Store user answers
     private String userID;  // Store user ID
+    private String examName;  // Store exam name
 
-    public ExamQuestion(List<Question> questions, String userID) {
+    public ExamQuestion(List<Question> questions, String userID, String examName) {
         this.questions = questions;
         this.userID = userID;
+        this.examName = examName;
         this.userAnswers = new ArrayList<>(questions.size());  // Initialize user answers list
         for (int i = 0; i < questions.size(); i++) {
-            userAnswers.add(Integer.valueOf(-1));  // Initialize all answers to -1 (no answer)
+            userAnswers.add(-1);  // Initialize all answers to -1 (no answer)
         }
 
         setTitle("Exam Question");
@@ -61,7 +63,6 @@ public class ExamQuestion extends JFrame {
         timer.start();
 
         nextButton.addActionListener(e -> nextQuestion());
-        //previousButton.addActionListener(e -> previousQuestion());
         submitButton.addActionListener(e -> submitExam());
 
         setVisible(true);
@@ -91,7 +92,6 @@ public class ExamQuestion extends JFrame {
         }
 
         // Enable/disable navigation buttons
-        // previousButton.setEnabled(questionIndex > 0);
         nextButton.setEnabled(questionIndex < questions.size() - 1);
         submitButton.setVisible(questionIndex == questions.size() - 1);
     }
@@ -102,12 +102,6 @@ public class ExamQuestion extends JFrame {
         loadQuestion(currentQuestionIndex);
     }
 
-    private void previousQuestion() {
-        saveUserAnswer();
-        currentQuestionIndex--;
-        loadQuestion(currentQuestionIndex);
-    }
-
     private void saveUserAnswer() {
         int selectedOption = -1;
         if (option1.isSelected()) selectedOption = 0;
@@ -115,12 +109,14 @@ public class ExamQuestion extends JFrame {
         else if (option3.isSelected()) selectedOption = 2;
         else if (option4.isSelected()) selectedOption = 3;
 
-        userAnswers.set(currentQuestionIndex, Integer.valueOf(selectedOption));
+        userAnswers.set(currentQuestionIndex, selectedOption);
     }
 
     private void submitExam() {
         saveUserAnswer();  // Save the answer of the last question
         int score = calculateScore();
+        ExamSubmission submission = new ExamSubmission(userID, examName, score); // Use examName parameter
+        submission.saveResultsToDatabase();
         JOptionPane.showMessageDialog(this, "Exam submitted! Your score: " + score);
         dispose();
         new MainScreen(userID, "Student");  // Pass the user ID back to MainScreen
@@ -160,6 +156,6 @@ public class ExamQuestion extends JFrame {
                 new Question("Which of the following is a correct way to create an object of class Foo?", List.of("Foo obj = new Foo();", "Foo obj;", "Foo() obj = new Foo;", "Foo obj = Foo;"), 0),
                 new Question("What is the output of the following code? String str = \"abcd\"; System.out.println(str.length());", List.of("3", "4", "5", "Error"), 1)
         );
-        SwingUtilities.invokeLater(() -> new ExamQuestion(questions, "12345"));
+        SwingUtilities.invokeLater(() -> new ExamQuestion(questions, "12345", "YourExamName"));
     }
 }

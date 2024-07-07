@@ -17,6 +17,7 @@ public class MainScreen extends JFrame {
     private JButton takeExamButton;
     private JButton logoutButton;
     private JLabel MyDetailsLabel;
+    private JLabel MyResultsLabel;
 
     public MainScreen(String userID, String role) {
         setTitle("Main Screen");
@@ -47,6 +48,15 @@ public class MainScreen extends JFrame {
             }
         });
 
+        // Add action listener to "My Results" label
+        MyResultsLabel.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseClicked(MouseEvent e) {
+                new MyResults(userID);
+                dispose();  // Close the main screen
+            }
+        });
+
         // Load exams from database
         loadExamsFromDatabase();
 
@@ -63,7 +73,8 @@ public class MainScreen extends JFrame {
                     new Question("Which of the following is a correct way to create an object of class Foo?", List.of("Foo obj = new Foo();", "Foo obj;", "Foo() obj = new Foo;", "Foo obj = Foo;"), 0),
                     new Question("What is the output of the following code? String str = \"abcd\"; System.out.println(str.length());", List.of("3", "4", "5", "Error"), 1)
             );
-            new ExamQuestion(questions, userID);  // Pass the userID
+            String selectedExam = (String) examBox.getSelectedItem();
+            new ExamQuestion(questions, userID, selectedExam);  // Pass the userID and selected exam name
             dispose();  // Close the main screen
         });
 
