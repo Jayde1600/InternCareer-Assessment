@@ -42,9 +42,16 @@ public class Login extends JDialog {
                 }
 
                 String userID = authenticateUser(email, password, role);
+                System.out.println("User ID: " + userID); // Debug print
+                System.out.println("Role: " + role); // Debug print
+
                 if (userID != null) {
                     dispose();  // Close the login dialog
-                    new MainScreen(userID, role);  // Open the main screen
+                    if (role.equals("Student")) {
+                        new MainScreen(userID, role);  // Open the main screen for students
+                    } else if (role.equals("Teacher")) {
+                        new TeacherMain(userID);  // Open the main screen for teachers
+                    }
                 } else {
                     JOptionPane.showMessageDialog(Login.this, "Invalid credentials", "Try Again", JOptionPane.ERROR_MESSAGE);
                 }
@@ -73,10 +80,11 @@ public class Login extends JDialog {
         try {
             conn = DriverManager.getConnection(DB_URL, USERNAME, PASSWORD);
 
-            String sql = "SELECT id FROM " + (role.equals("Student") ? "users" : "teachers") + " WHERE email=? AND password=?";
+            String sql = "SELECT id FROM users WHERE email=? AND password=? AND role=?";
             preparedStatement = conn.prepareStatement(sql);
             preparedStatement.setString(1, email);
             preparedStatement.setString(2, password);
+            preparedStatement.setString(3, role);
 
             resultSet = preparedStatement.executeQuery();
 

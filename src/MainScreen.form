@@ -113,7 +113,7 @@
               </grid>
             </constraints>
             <properties>
-              <text value="INSTRUCTIONS:&#10;1. This is a closed book exam (No internet allowed, external help, books or any external resources)&#10;2. Each Exam has a time limit of 20 mins, If you not done before the time expires your answers will be submitted automatically.&#10;3. All questions are multiple choice&#10;4. After submission you will receive your results&#10;5. GOOD LUCK!!"/>
+              <text value="INSTRUCTIONS:&#10;1. This is a closed book exam (No internet allowed, external help, books or any external resources)&#10;2. If you not done before the time expires, your answers will be submitted automatically.&#10;3. All questions are multiple choice&#10;4. After submission you will receive your results&#10;5. GOOD LUCK!!"/>
             </properties>
           </component>
           <component id="d65d8" class="javax.swing.JLabel">
